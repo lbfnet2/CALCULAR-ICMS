@@ -14,36 +14,66 @@
     <script>
         // Função para exportar as informações para Excel
         function exportToExcel() {
-            var table = document.createElement('table');
-            var infoBody = document.createElement('tbody');
+            // Recupere os dados do Local Storage
+            var informacoesSalvas = JSON.parse(localStorage.getItem('informacoes')) || [];
 
-            // Aqui você pode adicionar as informações que deseja exportar como linhas da tabela
-            // Por exemplo:
-            var rowData = ['Data1', 'Saída1', 'Destino1', 'Peso1'];
-            var row = document.createElement('tr');
-            rowData.forEach(function (cellData) {
-                var cell = document.createElement('td');
-                cell.appendChild(document.createTextNode(cellData));
-                row.appendChild(cell);
-            });
-            infoBody.appendChild(row);
+            // Verifique se existem dados para exportar
+            if (informacoesSalvas.length > 0) {
+                var table = document.createElement('table');
+                var infoBody = document.createElement('tbody');
 
-            // Adicione o corpo da tabela ao elemento da tabela
-            table.appendChild(infoBody);
+                // Adicione as informações do Local Storage como linhas da tabela
+                informacoesSalvas.forEach(function (informacao) {
+                    var row = document.createElement('tr');
+                    Object.values(informacao).forEach(function (value) {
+                        var cell = document.createElement('td');
+                        cell.appendChild(document.createTextNode(value));
+                        row.appendChild(cell);
+                    });
+                    infoBody.appendChild(row);
+                });
 
-            var ws = XLSX.utils.table_to_sheet(table);
+                // Adicione o corpo da tabela ao elemento da tabela
+                table.appendChild(infoBody);
 
-            // Criar um livro de Excel e adicionar a planilha
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Informações");
+                var ws = XLSX.utils.table_to_sheet(table);
 
-            // Salvar o arquivo Excel
-            XLSX.writeFile(wb, 'informacoes.xlsx');
+                // Criar um livro de Excel e adicionar a planilha
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Informações");
 
-            // Redirecionar de volta para puxa.html após o download
-            setTimeout(function () {
-                window.location.href = 'puxa.html';
-            }, 1000); // Redirecionar após 1 segundo (1000 milissegundos)
+                // Criar um blob com os dados do arquivo Excel
+                var blob = new Blob([s2ab(XLSX.write(wb, { type: 'binary' }))], { type: "application/octet-stream" });
+
+                // Criar um link de download para o blob
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'informacoes.xlsx';
+
+                // Adicionar o link ao documento e clicar nele para iniciar o download
+                document.body.appendChild(a);
+                a.click();
+
+                // Remover o link e liberar o blob após o download
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                // Redirecionar de volta para puxa.html após o download (opcional)
+                setTimeout(function () {
+                    window.location.href = 'puxa.html';
+                }, 1000); // Redirecionar após 1 segundo (1000 milissegundos)
+            } else {
+                alert("Não há informações para exportar.");
+            }
+        }
+
+        // Função para converter string em ArrayBuffer
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
         }
 
         // Exportar para Excel automaticamente ao abrir a página
