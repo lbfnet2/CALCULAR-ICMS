@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNovo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ccc;
+            /* Cor de fundo cinza */
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #999;
+        }
+
+        button {
+            margin: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: rgb(81, 80, 84);
+            color: #fff;
+            transition: background-color 0.3s;
+            /* Adiciona uma transição suave na mudança de cor de fundo */
+        }
+
+        button:hover {
+            background-color: rgb(46, 48, 69);
+        }
+
+        .info-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info-item {
+            margin-bottom: 5px;
+        }
+
+        /* Estilos do pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Fundo preto transparente */
+            z-index: 1;
+            overflow: auto;
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 style="color: #ff0;">PNovo</h2>
+        <div>
+            <button onclick="editarInformacao()">Editar</button>
+            <button onclick="apagarInformacao()">Apagar</button>
+            <button onclick="openPopup()">Novo</button> <!-- Botão Novo movido para cá -->
+        </div>
+        <div class="info-list" id="infoList"></div>
+    </div>
+
+    <!-- Pop-up para inserir novas informações -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h3>Nova Informação</h3>
+            <form id="dataForm">
+                <input type="text" id="data" placeholder="Data"><br>
+                <input type="text" id="saida" placeholder="Saída"><br>
+                <input type="text" id="destino" placeholder="Destino"><br>
+                <input type="text" id="peso" placeholder="Peso"><br>
+                <button type="button" onclick="salvarInformacoes()">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Adicione o Firebase ao seu site -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOFFHgsYl3gqOpEUOw2DtIyDtgRQhQTDE",
+            authDomain: "motora-c2c43.firebaseapp.com",
+            projectId: "motora-c2c43",
+            storageBucket: "motora-c2c43.appspot.com",
+            messagingSenderId: "533447273603",
+            appId: "1:533447273603:web:02214de57d8bfb49413fb6"
+        };
+
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Referência ao Firestore
+        const db = firebase.firestore();
+
+        // Função para salvar as informações no localStorage
+        function salvarInformacoes() {
+            var data = document.getElementById('data').value;
+            var saida = document.getElementById('saida').value;
+            var destino = document.getElementById('destino').value;
+            var peso = document.getElementById('peso').value;
+
+            // Criar um objeto com os dados
+            var novaInformacao = {
+                data: data,
+                saida: saida,
+                destino: destino,
+                peso: peso
+            };
+
+            // Verificar se já existem dados salvos
+            var informacoesSalvas = JSON.parse(localStorage.getItem('informacoes')) || [];
+
+            // Adicionar os novos dados à lista
+            informacoesSalvas.push(novaInformacao);
+
+            // Salvar no localStorage
+            localStorage.setItem('informacoes', JSON.stringify(informacoesSalvas));
+
+            alert('Informações salvas com sucesso!');
+            document.getElementById('dataForm').reset();
+            carregarInformacoesSalvas();
+            closePopup();
+        }
+
+        // Função para carregar e exibir informações salvas do localStorage
+        function carregarInformacoesSalvas() {
+            var infoList = document.getElementById('infoList');
+            infoList.innerHTML = '';
+
+            var informacoesSalvas = JSON.parse(localStorage.getItem('informacoes')) || [];
+
+            informacoesSalvas.forEach(function (informacao, index) {
+                var infoItem = document.createElement('div');
+                infoItem.classList.add('info-item');
+                infoItem.innerHTML = '<strong>Data:</strong> ' + informacao.data +
+                    ' | <strong>Destino:</strong> ' + informacao.destino +
+                    ' | <strong>Peso:</strong> ' + informacao.peso +
+                    ' | <button onclick="editarInformacao(' + index + ')">Editar</button>' +
+                    ' | <button onclick="apagarInformacao(' + index + ')">Apagar</button>';
+                infoList.appendChild(infoItem);
+            });
+        }
+
+        // Chama a função para carregar informações salvas ao carregar a página
+        carregarInformacoesSalvas();
+
+        // Função para editar informações
+        function editarInformacao(index) {
+            var newData = prompt("Digite a nova data:");
+            var newSaida = prompt("Digite a nova saída:");
+            var newDestino = prompt("Digite o novo destino:");
+            var newPeso = prompt("Digite o novo peso:");
+
+            // Carregar as informações salvas do localStorage
+            var informacoesSalvas = JSON.parse(localStorage.getItem('informacoes')) || [];
+
+            // Atualizar os dados correspondentes
+            if (informacoesSalvas[index]) {
+                informacoesSalvas[index].data = newData;
+                informacoesSalvas[index].saida = newSaida;
+                informacoesSalvas[index].destino = newDestino;
+                informacoesSalvas[index].peso = newPeso;
+
+                // Salvar de volta no localStorage
+                localStorage.setItem('informacoes', JSON.stringify(informacoesSalvas));
+
+                alert('Informações atualizadas com sucesso!');
+                carregarInformacoesSalvas();
+            } else {
+                alert('Índice inválido!');
+            }
+        }
+
+        // Função para apagar informações
+        function apagarInformacao(index) {
+            // Carregar as informações salvas do localStorage
+            var informacoesSalvas = JSON.parse(localStorage.getItem('informacoes')) || [];
+
+            // Remover o item correspondente ao índice
+            informacoesSalvas.splice(index, 1);
+
+            // Salvar de volta no localStorage
+            localStorage.setItem('informacoes', JSON.stringify(informacoesSalvas));
+
+            alert('Informação apagada com sucesso!');
+            carregarInformacoesSalvas();
+        }
+
+        // Função para abrir o pop-up
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        // Função para fechar o pop-up
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>

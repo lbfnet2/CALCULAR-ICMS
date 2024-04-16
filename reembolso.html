@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário Teste</title>
+    <!-- Adicione o SDK do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js"></script>
+    <script>
+        // Inicialize o Firebase com as configurações do seu projeto
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOFFHgsYl3gqOpEUOw2DtIyDtgRQhQTDE",
+            authDomain: "motora-c2c43.firebaseapp.com",
+            databaseURL: "https://motora-c2c43-default-rtdb.firebaseio.com",
+            projectId: "motora-c2c43",
+            storageBucket: "motora-c2c43.appspot.com",
+            messagingSenderId: "533447273603",
+            appId: "1:533447273603:web:02214de57d8bfb49413fb6",
+        };
+
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Referência para o banco de dados do Firebase
+        const database = firebase.database();
+
+        // Função para salvar os dados no banco de dados
+        function salvarDados() {
+            // Obtém os valores dos campos do formulário
+            const nome = document.getElementById('nome').value;
+            const idade = document.getElementById('idade').value;
+            const salario = document.getElementById('salario').value;
+
+            // Gera uma nova chave única para cada registro
+            const novoRegistroKey = database.ref().push().key;
+
+            // Salva os dados no banco de dados
+            database.ref('pessoas/' + novoRegistroKey).set({
+                nome: nome,
+                idade: idade,
+                salario: salario
+            }).then(() => {
+                alert("Dados salvos com sucesso!");
+            }).catch((error) => {
+                console.error("Erro ao salvar os dados: ", error);
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Formulário Teste</h2>
+    <form>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome"><br><br>
+
+        <label for="idade">Idade:</label>
+        <input type="number" id="idade" name="idade"><br><br>
+
+        <label for="salario">Salário:</label>
+        <input type="number" id="salario" name="salario"><br><br>
+
+        <!-- Botão para salvar os dados -->
+        <button type="button" onclick="salvarDados()">Salvar</button>
+    </form>
+</body>
+
+</html>
