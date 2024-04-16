@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportar para Excel</title>
+    <!-- Adicione a biblioteca SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        // Função para exportar as informações para Excel
+        function exportToExcel() {
+            var table = document.createElement('table');
+            var infoBody = document.createElement('tbody');
+
+            // Aqui você pode adicionar as informações que deseja exportar como linhas da tabela
+            // Por exemplo:
+            var rowData = ['Data1', 'Saída1', 'Destino1', 'Peso1'];
+            var row = document.createElement('tr');
+            rowData.forEach(function (cellData) {
+                var cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            });
+            infoBody.appendChild(row);
+
+            // Adicione o corpo da tabela ao elemento da tabela
+            table.appendChild(infoBody);
+
+            var ws = XLSX.utils.table_to_sheet(table);
+
+            // Criar um livro de Excel e adicionar a planilha
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Informações");
+
+            // Salvar o arquivo Excel
+            XLSX.writeFile(wb, 'informacoes.xlsx');
+
+            // Redirecionar de volta para puxa.html após o download
+            setTimeout(function () {
+                window.location.href = 'puxa.html';
+            }, 1000); // Redirecionar após 1 segundo (1000 milissegundos)
+        }
+
+        // Exportar para Excel automaticamente ao abrir a página
+        exportToExcel();
+    </script>
+
+</body>
+
+</html>
