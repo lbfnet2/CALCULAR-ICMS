@@ -62,25 +62,19 @@
                 // Converter o arquivo Excel para um blob
                 var wbBlob = new Blob([s2ab(XLSX.write(wb, { type: 'binary' }))], { type: "application/octet-stream" });
 
-                // Pergunte ao usuário o nome do arquivo
-                var fileName = prompt("Por favor, digite o nome do arquivo:", "arquivo.xlsx");
-                if (fileName != null) {
-                    // Criar uma referência para o arquivo no Firebase Storage com o nome escolhido pelo usuário
-                    var storageRef = storage.ref(fileName);
+                // Criar uma referência para o arquivo no Firebase Storage
+                var storageRef = storage.ref('caminho/para/seu/arquivo.xlsx');
 
-                    // Fazer o upload do blob para o Firebase Storage
-                    storageRef.put(wbBlob).then(function (snapshot) {
-                        console.log('Arquivo Excel enviado para o Firebase Storage com sucesso!');
-                        // Redirecionar de volta após o upload (opcional)
-                        setTimeout(function () {
-                            window.location.href = 'puxa.html';
-                        }, 1000); // Redirecionar após 1 segundo (1000 milissegundos)
-                    }).catch(function (error) {
-                        console.error('Erro ao enviar o arquivo Excel para o Firebase Storage:', error);
-                    });
-                } else {
-                    console.log("O usuário cancelou o envio do arquivo.");
-                }
+                // Fazer o upload do blob para o Firebase Storage
+                storageRef.put(wbBlob).then(function (snapshot) {
+                    console.log('Arquivo Excel enviado para o Firebase Storage com sucesso!');
+                    // Redirecionar de volta após o upload (opcional)
+                    setTimeout(function () {
+                        window.location.href = 'puxa.html';
+                    }, 1000); // Redirecionar após 1 segundo (1000 milissegundos)
+                }).catch(function (error) {
+                    console.error('Erro ao enviar o arquivo Excel para o Firebase Storage:', error);
+                });
             } else {
                 alert("Não há informações para exportar.");
             }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Ano e Mês</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff;
+            /* Fundo branco */
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        select {
+            margin: 10px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #999;
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            /* Aumentando o padding do botão */
+            font-size: 18px;
+            /* Aumentando o tamanho da fonte do botão */
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: rgb(51, 122, 183);
+            /* Cor azul */
+            color: #fff;
+            transition: background-color 0.3s;
+            /* Adiciona uma transição suave na mudança de cor de fundo */
+        }
+
+        button:hover {
+            background-color: rgb(41, 101, 153);
+            /* Cor azul um pouco mais escura ao passar o mouse */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 style="color: #000;">Selecionar o Período de Trabalho</h2>
+        <div>
+            <select id="ano">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </select>
+
+            <select id="mes">
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+
+            <button onclick="confirmarSelecao()">Confirmar</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmarSelecao() {
+            var anoSelecionado = document.getElementById('ano').value;
+            var mesSelecionado = document.getElementById('mes').value;
+            var periodoSelecionado = anoSelecionado + '-' + mesSelecionado;
+            localStorage.setItem('periodoSelecionado', periodoSelecionado);
+            window.location.href = 'menu.html?ano=' + anoSelecionado + '&mes=' + mesSelecionado;
+        }
+    </script>
+
+</body>
+
+</html>

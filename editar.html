@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Cadastro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-container {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            margin-bottom: 10px;
+        }
+
+        .item button {
+            margin-left: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button.delete {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Editar Cadastro</h2>
+        <div class="list-container" id="list-container"></div>
+    </div>
+
+    <script>
+        // Função para obter parâmetros da URL
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Função para preencher a lista com os dados do localStorage
+        function preencherListaComDados() {
+            var anoSelecionado = getParameterByName('ano');
+            var mesSelecionado = getParameterByName('mes');
+            var periodoSelecionado = 'ano=' + anoSelecionado + '&mes=' + mesSelecionado;
+            var dados = localStorage.getItem(periodoSelecionado);
+
+            var listContainer = document.getElementById('list-container');
+            listContainer.innerHTML = '';
+
+            if (dados) {
+                var dadosArray = JSON.parse(dados);
+                dadosArray.forEach(function (registro, index) {
+                    var item = document.createElement('div');
+                    item.classList.add('item');
+
+                    var texto = document.createTextNode(registro.data + ' - ' + registro.destino + ' - ' + registro.peso + ' kg');
+                    item.appendChild(texto);
+
+                    var botaoEditar = document.createElement('button');
+                    botaoEditar.classList.add('edit');
+                    botaoEditar.innerHTML = 'Editar';
+                    botaoEditar.addEventListener('click', function () {
+                        editarRegistro(index);
+                    });
+                    item.appendChild(botaoEditar);
+
+                    var botaoApagar = document.createElement('button');
+                    botaoApagar.classList.add('delete');
+                    botaoApagar.innerHTML = 'Apagar';
+                    botaoApagar.addEventListener('click', function () {
+                        apagarRegistro(index);
+                    });
+                    item.appendChild(botaoApagar);
+
+                    listContainer.appendChild(item);
+                });
+            }
+        }
+
+        // Chamar a função ao carregar a página
+        preencherListaComDados();
+
+        // Função para editar um registro
+        function editarRegistro(index) {
+            alert('Editar registro de índice ' + index);
+            // Implemente aqui a lógica para editar o registro com o índice fornecido
+        }
+
+        // Função para apagar um registro
+        function apagarRegistro(index) {
+            var anoSelecionado = getParameterByName('ano');
+            var mesSelecionado = getParameterByName('mes');
+            var periodoSelecionado = 'ano=' + anoSelecionado + '&mes=' + mesSelecionado;
+            var dados = localStorage.getItem(periodoSelecionado);
+
+            if (dados) {
+                var dadosArray = JSON.parse(dados);
+                dadosArray.splice(index, 1);
+                localStorage.setItem(periodoSelecionado, JSON.stringify(dadosArray));
+                preencherListaComDados();
+                alert('Registro apagado com sucesso!');
+            } else {
+                alert('Não há dados salvos para este período.');
+            }
+        }
+    </script>
+</body>
+
+</html>

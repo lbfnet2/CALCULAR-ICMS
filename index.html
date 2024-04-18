@@ -8,109 +8,121 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 10;
-            padding: 10;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #000;
+            background: linear-gradient(to bottom, #4d536d 30%, #ffffff 30%);
         }
 
         .container {
-            display: none;
-            /* Inicialmente oculto */
-            padding: 10px;
-            border-radius: 50px;
+            padding: 20px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            background-color: rgba(77, 83, 109, 0.7);
+            background-color: rgba(255, 255, 255, 0);
+            /* Alterado para transparente */
+            width: 400px;
+            margin-top: 50px;
+            /* Margem superior adicionada */
         }
 
-        .button-container {
-            text-align: center;
-            /* Centraliza o conteúdo horizontalmente */
+        h2 {
             margin-bottom: 20px;
-            /* Espaçamento inferior */
-        }
-
-        button {
-            background-color: rgb(81, 80, 84);
-            color: #050505;
-            cursor: pointer;
-            padding: 20px 30px;
-            /* Adiciona preenchimento interno */
-            border: none;
-            /* Remove a borda */
-            border-radius: 10px;
-            /* Adiciona bordas arredondadas */
-            font-size: 24px;
-            /* Altere o tamanho da fonte conforme desejado */
-
-        }
-
-        button:hover {
-            background-color: rgb(46, 48, 69);
+            color: #000;
+            /* Cor do texto alterada para preto */
         }
 
         .error {
             color: red;
             margin-bottom: 10px;
+            position: absolute;
+            bottom: -30px;
+            /* Posicionamento do texto de erro */
+            left: 0;
+            width: 100%;
+            z-index: 2;
+            /* Para garantir que o texto de erro fique acima do fundo */
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
-            border: 6px solid #8a86b1;
+            border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 24px;
-            /* Altere o tamanho da fonte conforme desejado */
-
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* Alterado para branco com opacidade */
         }
 
-        video {
+        button {
+            background-color: #4d536d;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4d536d;
+        }
+
+        .version {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #000;
+            /* Cor do texto alterada para preto */
+            margin-bottom: 20px;
+            /* Adicionado um espaço na parte inferior */
+        }
+
+        .logo {
+            width: 150px;
+            /* Aumento do tamanho da logo */
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+            color: #555;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="button-container"> <!-- Envolve o botão em uma div para centralizá-lo -->
-        <button onclick="showLogin()">ENTRAR</button> <!-- Botão para mostrar o formulário de login -->
-    </div>
-
     <div class="container" id="loginContainer">
-        <h2>MOTORISTAS</h2>
-        <h2>ANDRADE TRANSPORTES</h2>
+        <img class="logo" src="img/logo andrade junior.jpeg" alt="Logo da empresa">
+        <!-- Substitua o caminho pela localização da sua imagem -->
         <form id="loginForm" onsubmit="return validateLogin()">
-            <input type="text" id="username" placeholder="Digite seu Usuário"><br>
-            <input type="password" id="password" placeholder="Digite sua Senha"><br>
+            <input type="text" id="username" placeholder="Usuário">
+            <br>
+            <input type="password" id="password" placeholder="Senha">
+            <br>
             <button type="submit">LOGIN</button>
             <p class="error" id="errorMessage" style="display: none;">Usuário ou senha incorretos.</p>
         </form>
+        <p class="version">Versão do aplicativo: 1.0.5</p> <!-- Movido para abaixo do formulário de login -->
     </div>
 
-    <video autoplay loop muted>
-        <source src="login.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div class="footer">
+        <p>Desenvolvido por [LJM Tech] &copy; 2024</p>
+    </div>
 
     <script>
-        function showLogin() {
-            document.getElementById('loginContainer').style.display = 'block'; // Mostra o formulário de login ao clicar no botão "Entrar"
-            document.querySelector('.button-container').style.display = 'none'; // Esconde a div do botão "Entrar"
-        }
-
         function validateLogin() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
@@ -132,7 +144,7 @@
                         }
                     });
                     if (isValid) {
-                        window.location.href = 'pagina_principal.html'; // Redireciona para a página principal
+                        window.location.href = 'periodo.html'; // Redireciona para a página principal
                     } else {
                         document.getElementById('errorMessage').style.display = 'block'; // Exibe mensagem de erro
                     }

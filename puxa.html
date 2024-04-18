@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puxar e Baixar Informações</title>
+    <title>Puxa</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,42 +13,102 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            /* Adiciona alinhamento vertical ao centro */
-            min-height: 100vh;
-            /* Para centralizar na tela */
-            background-color: #ccc;
-            /* Cor de fundo cinza */
+            height: 100vh;
+            background-color: #fff;
+            position: relative;
+            /* Para o posicionamento absoluto dos botões */
         }
 
         .container {
             text-align: center;
-            margin-top: 20px;
         }
 
-        .button-container {
+        .botoes-container {
             display: flex;
-            flex-direction: column;
-            /* Altera a direção para uma coluna */
+            justify-content: center;
             align-items: center;
-            /* Centraliza os botões horizontalmente */
+            flex-direction: column;
+            margin-bottom: 20px;
         }
 
         button {
             margin: 10px;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 15px 30px;
+            font-size: 18px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background-color: rgb(81, 80, 84);
-            color: #fff;
+            background-color: #fff;
+            /* Alterado para branco */
+            color: #000;
+            /* Alterado para preto */
             transition: background-color 0.3s;
-            /* Adiciona uma transição suave na mudança de cor de fundo */
         }
 
         button:hover {
-            background-color: rgb(46, 48, 69);
+            background-color: #f2f2f2;
+            /* Alterado para um tom de cinza mais claro */
+        }
+
+        .layout-switcher {
+            position: absolute;
+            bottom: 10px;
+            /* Distância do fundo da página */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .layout-switcher button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #4d536d;
+            color: #000;
+            border: 1px solid #000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .layout-switcher button:hover {
+            background-color: #5e64a3;
+            color: #fff;
+        }
+
+        /* Estilos para a lista de itens */
+        .list-container {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item span {
+            flex: 1;
+            /* Faz com que cada item ocupe o espaço disponível */
+            text-align: center;
+        }
+
+        .item button {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -56,13 +116,92 @@
 <body>
 
     <div class="container">
-        <h2 style="color: #ff0;">Puxar e Baixar Informações</h2>
-        <div class="button-container">
-            <button onclick="location.href='create.html'">Criar Nova Informação</button>
-            <button onclick="location.href='edit_delete.html'">Editar ou Apagar Informações</button>
-            <button onclick="location.href='export_excel.html'">Exportar para Excel</button>
+        <h2 style="color: #000;">Puxa</h2>
+        <div class="botoes-container">
+            <p>Período selecionado:
+                <span id="periodoSelecionado"></span>
+            </p>
+            <!-- Lista de itens -->
+            <div class="list-container" id="list-container">
+                <!-- Os itens serão preenchidos aqui dinamicamente -->
+            </div>
         </div>
     </div>
+
+    <div class="layout-switcher">
+        <button onclick="abrirPagina('menu.html')">MENU</button>
+        <button onclick="abrirPagina('novo.html')">NOVO</button>
+        <button onclick="abrirPagina('editar.html')">EDITAR</button>
+        <button onclick="abrirPagina('enviar.html')">ENVIAR</button>
+    </div>
+
+    <script>
+        function getParametrosURL() {
+            var parametros = {};
+            var partes = window.location.search.substring(1).split('&');
+            for (var i = 0; i < partes.length; i++) {
+                var chaveValor = partes[i].split('=');
+                parametros[chaveValor[0]] = chaveValor[1];
+            }
+            return parametros;
+        }
+
+        function exibirPeriodoSelecionado() {
+            var parametros = getParametrosURL();
+            var ano = parametros['ano'];
+            var mes = parametros['mes'];
+            document.getElementById('periodoSelecionado').innerText = ano + '-' + mes;
+        }
+
+        function abrirPagina(pagina) {
+            var parametros = getParametrosURL();
+            var ano = parametros['ano'];
+            var mes = parametros['mes'];
+            window.location.href = pagina + '?ano=' + ano + '&mes=' + mes;
+        }
+
+        window.onload = function () {
+            exibirPeriodoSelecionado();
+            preencherListaComDados();
+        };
+
+        // Função para preencher a lista com os dados do localStorage
+        function preencherListaComDados() {
+            var anoSelecionado = getParametrosURL()['ano'];
+            var mesSelecionado = getParametrosURL()['mes'];
+            var periodoSelecionado = 'ano=' + anoSelecionado + '&mes=' + mesSelecionado;
+            var dados = localStorage.getItem(periodoSelecionado);
+            var listContainer = document.getElementById('list-container');
+            listContainer.innerHTML = ''; // Limpa o conteúdo atual da lista
+
+            if (dados) {
+                var dadosArray = JSON.parse(dados);
+                dadosArray.forEach(function (registro, index) {
+                    var item = document.createElement('div');
+                    item.classList.add('item');
+                    // Criando elementos para data, saída, destino e peso
+                    var dataSpan = document.createElement('span');
+                    dataSpan.textContent = registro.data;
+                    var saidaSpan = document.createElement('span');
+                    saidaSpan.textContent = registro.saida;
+                    var destinoSpan = document.createElement('span');
+                    destinoSpan.textContent = registro.destino;
+                    var pesoSpan = document.createElement('span');
+                    pesoSpan.textContent = registro.peso + ' kg';
+                    // Adicionando os elementos à div do item
+                    item.appendChild(dataSpan);
+                    item.appendChild(saidaSpan);
+                    item.appendChild(destinoSpan);
+                    item.appendChild(pesoSpan);
+                    listContainer.appendChild(item);
+                });
+            } else {
+                var mensagem = document.createElement('p');
+                mensagem.textContent = 'Nenhum histórico disponível para este período.';
+                listContainer.appendChild(mensagem);
+            }
+        }
+    </script>
 
 </body>
 
