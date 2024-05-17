@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Diferença de ICMS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Calculadora de Diferença de ICMS</h1>
+        <div class="form-group">
+            <label for="produto">Valor do Produto (R$):</label>
+            <input type="number" id="produto" placeholder="Digite o valor do produto">
+        </div>
+        <div class="form-group">
+            <label for="frete">Valor do Frete (R$):</label>
+            <input type="number" id="frete" placeholder="Digite o valor do frete">
+        </div>
+        <div class="form-group">
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade" placeholder="Digite a quantidade" value="1">
+        </div>
+        <div class="form-group">
+            <label for="origem">Origem:</label>
+            <select id="origem">
+                <option value="7">7%</option>
+                <option value="12">12%</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="destino">Destino:</label>
+            <select id="destino">
+                <option value="acre">Acre</option>
+                <option value="rondonia">Rondônia</option>
+            </select>
+        </div>
+        <button onclick="calcularICMS()">Calcular ICMS</button>
+        <div class="results" id="results">
+            <h2>Resultados</h2>
+            <p id="valorTotalProduto"></p>
+            <p id="valorTotalICMS"></p>
+            <p id="totalAPagar"></p>
+        </div>
+    </div>
+
+    <script>
+        function calcularICMS() {
+            // Obtendo valores do formulário
+            const valorProduto = parseFloat(document.getElementById('produto').value);
+            const valorFrete = parseFloat(document.getElementById('frete').value);
+            const quantidade = parseInt(document.getElementById('quantidade').value);
+            const origem = parseFloat(document.getElementById('origem').value);
+            const destino = document.getElementById('destino').value;
+
+            // Calculando o valor total do produto e frete
+            const valorTotalProduto = (valorProduto + valorFrete) * quantidade;
+
+            // Determinando a alíquota de ICMS de destino
+            let destinoICMS;
+            if (origem === 7) {
+                if (destino === 'acre') {
+                    destinoICMS = 14.83;
+                } else if (destino === 'rondonia') {
+                    destinoICMS = 15.53;
+                }
+            } else if (origem === 12) {
+                if (destino === 'acre') {
+                    destinoICMS = 8.64;
+                } else if (destino === 'rondonia') {
+                    destinoICMS = 9.32;
+                }
+            }
+
+            // Calculando o valor do ICMS
+            const valorTotalICMS = valorTotalProduto * (destinoICMS / 100);
+            const totalAPagar = valorTotalProduto + valorTotalICMS;
+
+            // Exibindo resultados
+            document.getElementById('valorTotalProduto').textContent = 'Valor Total do Produto: R$ ' + valorTotalProduto.toFixed(2);
+            document.getElementById('valorTotalICMS').textContent = 'Valor Total do ICMS: R$ ' + valorTotalICMS.toFixed(2);
+            document.getElementById('totalAPagar').textContent = 'Total a Pagar: R$ ' + totalAPagar.toFixed(2);
+        }
+    </script>
+</body>
+
+</html>
